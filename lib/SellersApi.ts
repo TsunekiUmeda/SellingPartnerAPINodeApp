@@ -1,11 +1,13 @@
 import * as https from 'https'
-const awsSigner = require('./awsSigner')
+import { awsSigner } from './awsSigner'
 
 export class SellersApi {
   constructor() {}
 
-  call = () => {
-    const options = awsSigner()
+  call = async (): Promise<void> => {
+    const options = await new awsSigner().awsSigner(
+      'https://sellingpartnerapi-na.amazon.com/sellers/v1/marketplaceParticipations'
+    )
     const option = {
       hostname: 'sellingpartnerapi-na.amazon.com',
       path: '/sellers/v1/marketplaceParticipations',
@@ -15,8 +17,7 @@ export class SellersApi {
     }
 
     const req = https.request(option, res => {
-      console.log('statusCode:', res.statusCode)
-      console.log('headers:', res.headers)
+      console.log('Sellers API statusCode:', res.statusCode)
 
       res.on('data', d => {
         process.stdout.write(d)
