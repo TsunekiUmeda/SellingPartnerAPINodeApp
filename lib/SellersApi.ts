@@ -5,15 +5,17 @@ export class SellersApi {
   constructor() {}
 
   call = async (): Promise<void> => {
-    const options = await new awsSigner().awsSigner(
-      'https://sellingpartnerapi-na.amazon.com/sellers/v1/marketplaceParticipations'
-    )
+    const signed = await new awsSigner(
+      'GET',
+      '/sellers/v1/marketplaceParticipations'
+    ).awsSigner()
+
     const option = {
-      hostname: 'sellingpartnerapi-na.amazon.com',
-      path: '/sellers/v1/marketplaceParticipations',
+      hostname: signed.hostname,
+      path: signed.pathname(),
       MarketplaceId: 'ATVPDKIKX0DER',
-      method: 'GET',
-      headers: options.headers,
+      method: signed.method,
+      headers: signed.headers,
     }
 
     const req = https.request(option, res => {
