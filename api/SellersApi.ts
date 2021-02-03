@@ -1,10 +1,16 @@
 import { DefaultApiClient } from '../lib/DefaultApiClient'
 
-export class SellersApi {
-  private methodName = 'GET'
-  private pathName = '/sellers/v1/marketplaceParticipations'
+const ApiOptions = {
+  method: 'GET',
+  pathname: '/sellers/v1/marketplaceParticipations',
+}
 
-  getMarketplaceParticipations = async () => {
-    new DefaultApiClient(this.methodName, this.pathName).call()
+export class SellersApi extends DefaultApiClient {
+  constructor() {
+    super(ApiOptions)
+  }
+
+  async getMarketplaceParticipations() {
+    return await this.call()
   }
 }

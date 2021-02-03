@@ -1,35 +1,30 @@
 import { DefaultApiClient } from '../lib/DefaultApiClient'
-
-export class ProductFeesApi {
-  private methodName = 'POST'
-  data = JSON.stringify({
-    FeesEstimateRequest: {
-      MarketplaceId: 'ATVPDKIKX0DER',
-      PriceToEstimateFees: {
-        ListingPrice: {
-          CurrencyCode: 'USD',
-          Amount: 10,
-        },
-      },
-      Identifier: '100',
-    },
-  })
-
-  constructor() {}
-
-  getMyFeesEstimateForSKU = async (sellerSKU: string): Promise<void> => {
-    new DefaultApiClient(
-      this.methodName,
-      `/products/fees/v0/listings/${sellerSKU}/feesEstimate`,
-      this.data
-    ).call()
+interface ProductFeesApiData {
+  FeesEstimateRequest: {
+    MarketplaceId: string
+    PriceToEstimateFees: {
+      ListingPrice: {
+        CurrencyCode: string
+        Amount: number
+      }
+    }
+    Identifier: string
+  }
+}
+export class ProductFeesApi extends DefaultApiClient {
+  constructor(private ProductId: string, private data: string) {
+    super({
+      method: 'POST',
+      pathname: `/products/fees/v0/listings/${ProductId}/feesEstimate`,
+      data: data,
+    })
   }
 
-  getMyFeesEstimateForASIN = async (asin: string): Promise<void> => {
-    new DefaultApiClient(
-      this.methodName,
-      `/products/fees/v0/listings/${asin}/feesEstimate`,
-      this.data
-    ).call()
+  getMyFeesEstimateForSKU = async (): Promise<void> => {
+    this.call()
+  }
+
+  getMyFeesEstimateForASIN = async (): Promise<void> => {
+    this.call()
   }
 }
