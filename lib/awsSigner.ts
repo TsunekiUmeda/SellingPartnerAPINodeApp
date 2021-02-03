@@ -2,32 +2,29 @@ const core = require('aws-sdk/lib/core')
 const aws = require('aws-sdk')
 const { Auth } = require('./Auth')
 import { accessKey, secretKey } from '../credentials'
+import { ApiOptions } from './DefaultApiClient'
 const credential = new aws.Credentials(accessKey, secretKey)
 
 export class awsSigner {
-  constructor(
-    private method: string,
-    private pathname: string,
-    private body?: {}
-  ) {}
+  constructor(private option: ApiOptions) {}
   awsSigner = async () => {
     const accessToken = await new Auth().requestAccessToken()
-    console.log('body', this.body)
+
     const serviceName = 'execute-api'
     const options = {
       hostname: 'sellingpartnerapi-na.amazon.com',
       region: 'us-east-1',
-      method: this.method,
+      method: this.option.method,
       search: () => '',
-      body: this.body,
+      body: this.option.data,
       headers: {
         host: 'sellingpartnerapi-na.amazon.com',
         'x-amz-access-token': accessToken,
       },
-      pathname: () => this.pathname,
+      pathname: () => this.option.pathname,
     }
 
-    if (this.method === 'GET') {
+    if (this.option.method === 'GET') {
       delete options.body
     }
 

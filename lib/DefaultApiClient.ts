@@ -1,21 +1,22 @@
 import * as https from 'https'
 import { awsSigner } from './awsSigner'
 
+export interface ApiOptions {
+  method: string
+  pathname: string
+  MarketplaceId?: string
+  ItemType?: string
+  Asins?: string
+  SellerSku?: string
+  data?: {}
+}
 export class DefaultApiClient {
-  constructor(
-    private method: string,
-    private pathname: string,
-    private data?: {}
-  ) {}
+  constructor(private apiOptions: ApiOptions) {}
 
-  call = async () => {
-    const signed = await new awsSigner(
-      this.method,
-      this.pathname,
-      this.data
-    ).awsSigner()
+  protected call = async () => {
+    const signed = await new awsSigner(this.apiOptions).awsSigner()
 
-    const option = {
+    const signedOptions = {
       hostname: signed.hostname,
       path: signed.pathname(),
       MarketplaceId: 'ATVPDKIKX0DER',
@@ -23,7 +24,7 @@ export class DefaultApiClient {
       headers: signed.headers,
     }
 
-    const req = https.request(option, res => {
+    const req = https.request(signedOptions, res => {
       console.log('Sellers API statusCode:', res.statusCode)
 
       res.on('data', d => {
@@ -35,8 +36,8 @@ export class DefaultApiClient {
       console.error(e)
     })
 
-    if (this.method === 'POST') {
-      req.write(this.data)
+    if (this.apiOptions.method === 'POST') {
+      req.write(this.apiOptions.data)
     }
 
     req.end()
