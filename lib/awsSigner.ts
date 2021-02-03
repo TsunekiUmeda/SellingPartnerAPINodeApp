@@ -12,7 +12,7 @@ export class awsSigner {
   ) {}
   awsSigner = async () => {
     const accessToken = await new Auth().requestAccessToken()
-
+    console.log('body', this.body)
     const serviceName = 'execute-api'
     const options = {
       hostname: 'sellingpartnerapi-na.amazon.com',

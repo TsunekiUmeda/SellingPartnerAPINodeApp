@@ -1,8 +1,11 @@
 import * as https from 'https'
 import { awsSigner } from './awsSigner'
+import { DefaultApiClient } from './DefaultApiClient'
 
 export class ProductFeesApi {
-  constructor(public SellerSKU: string) {}
+  private methodName = 'POST'
+  private pathName = `/products/fees/v0/listings/${this.SellerSKU}/feesEstimate`
+  constructor(private SellerSKU: string) {}
 
   getMyFeesEstimateForSKU = async (): Promise<void> => {
     const data = JSON.stringify({
@@ -17,33 +20,6 @@ export class ProductFeesApi {
         Identifier: '100',
       },
     })
-
-    const signed = await new awsSigner(
-      'POST',
-      `/products/fees/v0/listings/${this.SellerSKU}/feesEstimate`,
-      data
-    ).awsSigner()
-
-    const option = {
-      hostname: signed.hostname,
-      path: signed.pathname(),
-      method: signed.method,
-      headers: signed.headers,
-    }
-
-    const req = https.request(option, res => {
-      console.log('ProductFees API statusCode:', res.statusCode)
-
-      res.on('data', d => {
-        process.stdout.write(d)
-      })
-    })
-
-    req.on('error', e => {
-      console.error(e)
-    })
-
-    req.write(data)
-    req.end()
+    new DefaultApiClient(this.methodName, this.pathName, data).call()
   }
 }
