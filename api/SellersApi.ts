@@ -1,4 +1,4 @@
-import { DefaultApiClient } from './DefaultApiClient'
+import { DefaultApiClient } from '../lib/DefaultApiClient'
 
 export class SellersApi {
   private methodName = 'GET'

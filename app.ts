@@ -1,5 +1,5 @@
-import { SellersApi } from './lib/SellersApi'
-import { ProductFeesApi } from './lib/ProductsFeesApi'
+import { SellersApi } from './api/SellersApi'
+import { ProductFeesApi } from './api/ProductsFeesApi'
 
 console.log('start')
 
