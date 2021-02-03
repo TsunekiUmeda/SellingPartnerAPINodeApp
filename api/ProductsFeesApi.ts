@@ -1,5 +1,5 @@
 import { DefaultApiClient } from '../lib/DefaultApiClient'
-interface ProductFeesApiData {
+type FeesEstimateData = {
   FeesEstimateRequest: {
     MarketplaceId: string
     PriceToEstimateFees: {
@@ -11,20 +11,27 @@ interface ProductFeesApiData {
     Identifier: string
   }
 }
-export class ProductFeesApi extends DefaultApiClient {
-  constructor(private ProductId: string, private data: string) {
-    super({
+
+export class ProductFeesApi {
+  private async getMyFeesEstimate(productId: string, data: FeesEstimateData) {
+    await new DefaultApiClient({
       method: 'POST',
-      pathname: `/products/fees/v0/listings/${ProductId}/feesEstimate`,
+      pathname: `/products/fees/v0/listings/${productId}/feesEstimate`,
       data: data,
-    })
+    }).call()
   }
 
-  getMyFeesEstimateForSKU = async (): Promise<void> => {
-    this.call()
+  getMyFeesEstimateForSKU = async (
+    sellerSKU: string,
+    data: FeesEstimateData
+  ): Promise<void> => {
+    await this.getMyFeesEstimate(sellerSKU, data)
   }
 
-  getMyFeesEstimateForASIN = async (): Promise<void> => {
-    this.call()
+  getMyFeesEstimateForASIN = async (
+    asin: string,
+    data: FeesEstimateData
+  ): Promise<void> => {
+    await this.getMyFeesEstimate(asin, data)
   }
 }

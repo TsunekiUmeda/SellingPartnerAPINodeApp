@@ -13,7 +13,7 @@ export interface ApiOptions {
 export class DefaultApiClient {
   constructor(private apiOptions: ApiOptions) {}
 
-  protected call = async () => {
+  call = async () => {
     const signed = await new awsSigner(this.apiOptions).awsSigner()
 
     const signedOptions = {
