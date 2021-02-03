@@ -1,6 +1,4 @@
-import * as https from 'https'
-import { awsSigner } from './awsSigner'
-import { DefaultApiClient } from './DefaultApiClient'
+import { DefaultApiClient } from '../lib/DefaultApiClient'
 
 export class ProductFeesApi {
   private methodName = 'POST'
