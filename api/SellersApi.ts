@@ -10,7 +10,7 @@ export class SellersApi extends DefaultApiClient {
     super(ApiOptions)
   }
 
-  async getMarketplaceParticipations() {
+  async getMarketplaceParticipations(): Promise<void> {
     return await this.call()
   }
 }
