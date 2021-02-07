@@ -3,28 +3,31 @@ const aws = require('aws-sdk')
 const { Auth } = require('./Auth')
 import { accessKey, secretKey } from '../credentials'
 import { ApiOptions } from './DefaultApiClient'
+import * as qs from 'qs'
 const credential = new aws.Credentials(accessKey, secretKey)
 
 export class awsSigner {
-  constructor(private option: ApiOptions) {}
+  constructor(private apiOptions: ApiOptions) {}
   awsSigner = async () => {
     const accessToken = await new Auth().requestAccessToken()
-
+    const queryString = qs.stringify(this.apiOptions.params)
+    const body = JSON.stringify(this.apiOptions.data)
     const serviceName = 'execute-api'
+
     const options = {
-      hostname: 'sellingpartnerapi-na.amazon.com',
+      // hostname: 'sellingpartnerapi-na.amazon.com',
       region: 'us-east-1',
-      method: this.option.method,
-      search: () => '',
-      body: this.option.data,
+      method: this.apiOptions.method,
+      search: () => (queryString ? queryString : ''),
+      body,
       headers: {
         host: 'sellingpartnerapi-na.amazon.com',
         'x-amz-access-token': accessToken,
       },
-      pathname: () => this.option.pathname,
+      pathname: () => this.apiOptions.pathname,
     }
 
-    if (this.option.method === 'GET') {
+    if (this.apiOptions.method === 'GET') {
       delete options.body
     }
 
@@ -34,7 +37,6 @@ export class awsSigner {
 
     // // SigV4署名
     signer.addAuthorization(credential, now)
-    console.log('header', options.headers)
     return options
   }
 }
