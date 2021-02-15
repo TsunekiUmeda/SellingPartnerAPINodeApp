@@ -1,4 +1,5 @@
 import * as https from 'https'
+import axios from 'axios'
 import { awsSigner } from './awsSigner'
 
 export interface ApiOptions {
@@ -16,7 +17,7 @@ export interface ApiOptions {
 export class DefaultApiClient {
   constructor(private apiOptions: ApiOptions) {}
 
-  call = async (): Promise<void> => {
+  get = async (): Promise<void> => {
     console.log('apiOptions', this.apiOptions.params)
     const signed = await new awsSigner(this.apiOptions).awsSigner()
 
@@ -46,5 +47,16 @@ export class DefaultApiClient {
     }
 
     req.end()
+  }
+
+  post = async () => {
+    const signed = await new awsSigner(this.apiOptions).awsSigner()
+    const response = await axios.post(
+      'https://sellingpartnerapi-fe.amazon.com/feeds/2020-09-04/documents',
+      this.apiOptions.data,
+      { headers: signed.headers }
+    )
+
+    return response.data.payload
   }
 }
