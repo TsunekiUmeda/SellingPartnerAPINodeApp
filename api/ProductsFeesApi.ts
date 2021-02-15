@@ -18,7 +18,7 @@ export class ProductFeesApi {
       method: 'POST',
       pathname: `/products/fees/v0/listings/${productId}/feesEstimate`,
       data: data,
-    }).call()
+    }).get()
   }
 
   getMyFeesEstimateForSKU = async (
